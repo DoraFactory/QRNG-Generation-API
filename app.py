@@ -4,7 +4,7 @@ import json
 
 app = Flask(__name__)
 
-@app.route('/generateQRNGData', methods=['GET'])
+@app.route('/QRNG/SubmitJob', methods=['GET'])
 def generate_QRNG_Data():
     length = request.args.get('length', '100')
     number = request.args.get('number', '1')
@@ -13,6 +13,17 @@ def generate_QRNG_Data():
     print(msg)
     bitstrings = generate_data(int(length), int(number), QPU)
     return jsonify({'Requested QRNG Data': bitstrings})
+
+@app.route('/QRNG/JobStatus/<jobID>', methods=['GET'])
+def getJobStatus(jobID):
+    print(jobID)
+    return jsonify(str(jobID))
+
+@app.route('/QRNG/JobResults/<jobID>', methods=['GET'])
+
+@app.route('/test', methods=['GET'])
+def test():
+    return jsonify({'test': 'test'})
 
 if __name__ == '__main__':
     app.run(debug=True)
