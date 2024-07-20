@@ -1,25 +1,28 @@
 from flask import Flask, request, jsonify
-from IBM_QBraid_DataGeneration import generate_data
+from IBM_QBraid_DataGeneration import launch_job, get_job_status, get_job_results
 import json
 
 app = Flask(__name__)
 
+#***TO-DO: implement error handling
+
 @app.route('/QRNG/SubmitJob', methods=['GET'])
-def generate_QRNG_Data():
+def launchJob():
     length = request.args.get('length', '100')
     number = request.args.get('number', '1')
     QPU = request.args.get('QPU', None)
     msg = number + ' bitstring(s) of length ' + length + ' on quantum computer ' + QPU
     print(msg)
-    bitstrings = generate_data(int(length), int(number), QPU)
-    return jsonify({'Requested QRNG Data': bitstrings})
+    output = launch_job(int(length), int(number), QPU)
+    return output
 
 @app.route('/QRNG/JobStatus/<jobID>', methods=['GET'])
 def getJobStatus(jobID):
-    print(jobID)
-    return jsonify(str(jobID))
+    return get_job_status(jobID)
 
 @app.route('/QRNG/JobResults/<jobID>', methods=['GET'])
+def getJobResults(jobID):
+    return jsonify({'data': get_job_results(jobID)})
 
 @app.route('/test', methods=['GET'])
 def test():

@@ -1,4 +1,5 @@
 from qbraid.runtime.qiskit import QiskitRuntimeProvider
+from qbraid.runtime.qiskit.job import QiskitJob
 
 from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
 from qiskit.circuit.library import QuantumVolume
@@ -15,6 +16,7 @@ from dotenv import load_dotenv
 
 allowed_devices = ['ibm_brisbane', 'ibm_kyoto', 'ibm_sherbrooke', 'ibm_osaka']
 
+'''
 def generate_data(length, numLines, machine=None):
     load_dotenv()
     API_KEY = os.getenv('IBM_APIKEY')
@@ -54,6 +56,9 @@ def generate_data(length, numLines, machine=None):
     print({'data': results})
 
     return results
+    '''
+
+#***implement error handling for all functions and input cases
 
 def launch_job(length=100, numLines=1, machine=None):
     API_KEY = os.getenv('IBM_APIKEY')
@@ -75,9 +80,17 @@ def launch_job(length=100, numLines=1, machine=None):
     transpiled_circuit = pm.run(HGate_circ)
     shot_count = (length*numLines)/100
     job = device.run(transpiled_circuit, shots=shot_count, memory=True)
-    output =  f'job running on device {machine}, jobID = {job._job_id}'
+
+    output =  f'job running on device {machine}, jobID = {job._job_id} (***KEEP TRACK OF JOB ID***)'
     print('job running')
     return output
+
+
+def get_least_busy_device():
+    API_KEY = os.getenv('IBM_APIKEY')
+    provider = QiskitRuntimeProvider(API_KEY)
+    return provider.least_busy().id
+
 
 def get_job_status(jobID):
     API_KEY = os.getenv('IBM_APIKEY')
@@ -85,23 +98,36 @@ def get_job_status(jobID):
     job = provider.job(jobID)
     if job.status() == JobStatus.QUEUED:
         queueInfo = job.queue_info()
-        output = f'job {jobID} is queued: estimated start time is {queueInfo.estimated_start_time}, queue position is {queueInfo.position}. Call the /QRNG/JobStatus/<jobID> endpoint later to check for job completion'
+        output = f'job {jobID} on device {job._backend.name} is queued: estimated start time is {queueInfo.estimated_start_time}, queue position is {queueInfo.position}. Call the /QRNG/JobStatus/yourJobID endpoint later to check for job completion'
     elif job.status() == JobStatus.DONE:
         output = f'job {jobID} has run succesfully on device {job._backend.name}. Call the /QRNG/JobResults/<jobID> endpoint to get QRNG data in JSON'
     else:
         output = job.status()
+        #***fix return so that it's a string
+    return output
 
-    return [output]
-    
-def get_least_busy_device():
-    API_KEY = os.getenv('IBM_APIKEY')
-    provider = QiskitRuntimeProvider(API_KEY)
-    return provider.least_busy().id
 
 def get_job_results(jobID):
     API_KEY = os.getenv('IBM_APIKEY')
     provider = QiskitRuntimeService('ibm_quantum', API_KEY)
     job = provider.job(jobID)
+    QBraidJob = QiskitJob(jobID, job)
+
+    result = QBraidJob.result()
+    rawData = result.measurements()
+    length = len(rawData[0])
+
+    unbrokenData = []
+    for shot in rawData:
+        for meas in shot:
+            unbrokenData.append(meas)
+
+    data = []
+    for i in range(0, len(unbrokenData), length):
+        data.append(''.join(map(str, unbrokenData[i:i+length])))
+    return data
+    
 
 #print(launch_job())
 #print(get_job_status('ctd1a0gy6ybg008tn780'))
+#print(get_job_results('ctd1a0gy6ybg008tn780'))
