@@ -84,12 +84,10 @@ def launch_job(length=100, numLines=1, machine=None):
     print('job running')
     return output
 
-
 def get_least_busy_device():
     API_KEY = os.getenv('IBM_APIKEY')
     provider = QiskitRuntimeProvider(API_KEY)
     return provider.least_busy().id
-
 
 def get_job_status(jobID):
     API_KEY = os.getenv('IBM_APIKEY')
@@ -104,7 +102,6 @@ def get_job_status(jobID):
         output = job.status()
         #***fix return so that it's a string
     return output
-
 
 def get_job_results(jobID):
     API_KEY = os.getenv('IBM_APIKEY')
@@ -126,7 +123,6 @@ def get_job_results(jobID):
         data.append(''.join(map(str, unbrokenData[i:i+length])))
     return data
     
-
 #print(launch_job())
 #print(get_job_status('ctd1a0gy6ybg008tn780'))
 #print(get_job_results('ctd1a0gy6ybg008tn780'))
