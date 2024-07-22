@@ -14,7 +14,6 @@ import numpy as np
 import os
 from dotenv import load_dotenv
 
-allowed_devices = ['ibm_brisbane', 'ibm_kyoto', 'ibm_sherbrooke', 'ibm_osaka']
 
 '''
 def generate_data(length, numLines, machine=None):
