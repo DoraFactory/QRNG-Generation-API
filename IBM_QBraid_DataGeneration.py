@@ -95,9 +95,9 @@ def get_job_status(jobID):
     job = provider.job(jobID)
     if job.status() == JobStatus.QUEUED:
         queueInfo = job.queue_info()
-        output = f'job {jobID} on device {job._backend.name} is queued: estimated start time is {queueInfo.estimated_start_time}, queue position is {queueInfo.position}. Call the /QRNG/JobStatus/yourJobID endpoint later to check for job completion'
+        output = f'job {jobID} on device {job._backend.name} is queued: estimated start time is {queueInfo.estimated_start_time}, queue position is {queueInfo.position}. Call the /QRNG/JobStatus?jobID=[JOB ID] endpoint later to check for job completion'
     elif job.status() == JobStatus.DONE:
-        output = f'job {jobID} has run succesfully on device {job._backend.name}. Call the /QRNG/JobResults/<jobID> endpoint to get QRNG data in JSON'
+        output = f'job {jobID} has run succesfully on device {job._backend.name}. Call the /QRNG/JobResults?jobID=[JOB ID] endpoint to get QRNG data in JSON'
     else:
         output = job.status()
         #***fix return so that it's a string

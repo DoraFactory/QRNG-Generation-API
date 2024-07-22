@@ -53,7 +53,7 @@ def getJobStatus():
     if 'jobID' not in request.args:
         return 'ERROR: must provide valid Quantum Job ID as URL HTTP parameter'
     
-    jobID = request.args.get(jobID)
+    jobID = request.args.get('jobID')
     return get_job_status(jobID)
 
 @app.route('/QRNG/JobResults', methods=['GET'])
@@ -65,7 +65,7 @@ def getJobResults():
     if 'jobID' not in request.args:
         return 'ERROR: must provide valid Quantum Job ID as URL HTTP parameter'
     
-    jobID = request.args.get(jobID)
+    jobID = request.args.get('jobID')
     return jsonify({'data': get_job_results(jobID)})
 
 if __name__ == '__main__':

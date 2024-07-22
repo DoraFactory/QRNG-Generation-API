@@ -89,3 +89,6 @@ def jobSubmissionFunctionalTests():
     print('expected output: Succesful completion\n')
 
 #jobSubmissionFunctionalTests()
+
+#response = requests.get('http://127.0.0.1:5000/QRNG/JobResults?jobID=ctfdae99fby0008kdxw0', headers = {'API-Key': 'abcd'})
+#print(response.json())
