@@ -1,7 +1,7 @@
 import requests
 
 #Functional test method for job submission endpoint
-def testJobSubmissionEndpoint(length=None, number=None, QPU=None, header='API-Key', apiKey='abcd'):
+def testJobSubmissionEndpoint(length=None, number=None, QPU=None, header='API-Key', apiKey='TESThiuhfwe823rudf'):
     url = f'http://127.0.0.1:5000/QRNG/SubmitJob?'
     if length != None:
         url += f'length={length}&'

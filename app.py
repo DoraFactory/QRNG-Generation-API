@@ -2,9 +2,11 @@ from flask import Flask, request, jsonify
 from IBM_QBraid_DataGeneration import launch_job, get_job_status, get_job_results
 import json
 
+import os
+
 app = Flask(__name__)
 
-API_Key_Cache_Test = ['abcd', '1234', 'hello', '234fdsjf3']
+API_Keys = os.getenv('API_Keys')
 
 max_shots_allowed = 100*10000
 
@@ -14,7 +16,7 @@ def check_authorization():
     if 'API-Key' not in request.headers:
         return 'ERROR: Please provide an "API-Key" header in your HTTP request with your API Key to access this endpoint'
     print (request.headers['API-Key'])
-    if request.headers['API-Key'] not in API_Key_Cache_Test:
+    if request.headers['API-Key'] not in API_Keys:
         return 'ERROR: Provided API key is either not authorized to access this endpoint or does not exist. Re-check to see if your key is entered correctly or contact Dora Factory for a valid API key'
     return 'True'
 
