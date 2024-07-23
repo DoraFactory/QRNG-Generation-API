@@ -66,7 +66,7 @@ def getJobResults():
         return 'ERROR: must provide valid Quantum Job ID as URL HTTP parameter'
     
     jobID = request.args.get('jobID')
-    return jsonify({'data': get_job_results(jobID)})
+    return (get_job_results(jobID))
 
 if __name__ == '__main__':
     app.run(debug=True)

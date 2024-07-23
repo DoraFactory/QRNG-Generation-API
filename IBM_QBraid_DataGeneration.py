@@ -14,6 +14,10 @@ import numpy as np
 import os
 from dotenv import load_dotenv
 
+from qiskit_ibm_runtime.exceptions import IBMRuntimeError
+
+from flask import jsonify
+
 
 '''
 def generate_data(length, numLines, machine=None):
@@ -92,7 +96,10 @@ def get_least_busy_device():
 def get_job_status(jobID):
     API_KEY = os.getenv('IBM_APIKEY')
     provider = QiskitRuntimeService('ibm_quantum', API_KEY)
-    job = provider.job(jobID)
+    try:
+        job = provider.job(jobID)
+    except:
+        return('Job not found. Verify job ID URL parameter or else rerun your job')
     if job.status() == JobStatus.QUEUED:
         queueInfo = job.queue_info()
         output = f'job {jobID} on device {job._backend.name} is queued: estimated start time is {queueInfo.estimated_start_time}, queue position is {queueInfo.position}. Call the /QRNG/JobStatus?jobID=[JOB ID] endpoint later to check for job completion'
@@ -106,7 +113,10 @@ def get_job_status(jobID):
 def get_job_results(jobID):
     API_KEY = os.getenv('IBM_APIKEY')
     provider = QiskitRuntimeService('ibm_quantum', API_KEY)
-    job = provider.job(jobID)
+    try:
+        job = provider.job(jobID)
+    except:
+        return('Job not found. Verify job ID URL parameter or else rerun your job')
     QBraidJob = QiskitJob(jobID, job)
 
     result = QBraidJob.result()
@@ -121,7 +131,7 @@ def get_job_results(jobID):
     data = []
     for i in range(0, len(unbrokenData), length):
         data.append(''.join(map(str, unbrokenData[i:i+length])))
-    return data
+    return jsonify({'data': data})
     
 #print(launch_job())
 #print(get_job_status('ctd1a0gy6ybg008tn780'))
