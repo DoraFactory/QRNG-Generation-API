@@ -1,8 +1,8 @@
 from flask import Flask, request, jsonify
 from IBM_QBraid_DataGeneration import launch_job, get_job_status, get_job_results
 import json
-
 import os
+import waitress
 
 app = Flask(__name__)
 
@@ -15,7 +15,6 @@ allowed_devices = ['ibm_brisbane', 'ibm_kyoto', 'ibm_sherbrooke', 'ibm_osaka']
 def check_authorization():
     if 'API-Key' not in request.headers:
         return 'ERROR: Please provide an "API-Key" header in your HTTP request with your API Key to access this endpoint'
-    print (request.headers['API-Key'])
     if request.headers['API-Key'] not in API_Keys:
         return 'ERROR: Provided API key is either not authorized to access this endpoint or does not exist. Re-check to see if your key is entered correctly or contact Dora Factory for a valid API key'
     return 'True'
@@ -27,11 +26,8 @@ def launchJob():
     if auth_message != 'True':
         return auth_message
     
-    print(request.args)
     length = request.args.get('length', default=100, type=int)
     number = request.args.get('number', default=1, type=int)
-    print(length)
-    print(number)
     if not (length > 0 and number > 0):
         return 'ERROR: both the length and number parameters for requested QRNG data must be positive integers'
     if (length % 100)  != 0:
@@ -71,4 +67,4 @@ def getJobResults():
     return (get_job_results(jobID))
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    waitress.serve(app, host='0.0.0.0', port=8080)
