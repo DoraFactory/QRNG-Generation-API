@@ -91,5 +91,5 @@ def jobSubmissionFunctionalTests():
 #jobSubmissionFunctionalTests()
 
 
-response = requests.get('http://127.0.0.1:8080/QRNG/SubmitJob?length=200&number=2', headers = {'API-Key': 'TESThiuhfwe823rudf'})
-print(response.text)
+response = requests.get('http://127.0.0.1:55000/QRNG/JobResults?jobID=ctfga50zhysg008t576g', headers = {'API-Key': 'TESThiuhfwe823rudf'})
+print(response.json())
