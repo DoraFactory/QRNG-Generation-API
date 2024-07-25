@@ -18,6 +18,8 @@ from qiskit_ibm_runtime.exceptions import IBMRuntimeError, RuntimeInvalidStateEr
 
 from flask import jsonify
 
+from scipy.linalg import toeplitz, matmul_toeplitz
+
 
 def launch_job(length=100, numLines=1, machine=None):
     API_KEY = os.getenv('IBM_APIKEY')
@@ -44,10 +46,12 @@ def launch_job(length=100, numLines=1, machine=None):
     print('job running')
     return output
 
+
 def get_least_busy_device():
     API_KEY = os.getenv('IBM_APIKEY')
     provider = QiskitRuntimeProvider(API_KEY)
     return provider.least_busy().id
+
 
 def get_job_status(jobID):
     API_KEY = os.getenv('IBM_APIKEY')
@@ -65,6 +69,7 @@ def get_job_status(jobID):
         output = job.status().value
     return output
 
+
 def get_job_results(jobID):
     API_KEY = os.getenv('IBM_APIKEY')
     provider = QiskitRuntimeService('ibm_quantum', API_KEY)
@@ -74,7 +79,7 @@ def get_job_results(jobID):
         return('Job not found. Verify job ID URL parameter or else rerun your job')
     
     if job.status() == JobStatus.INITIALIZING or job.status() == JobStatus.QUEUED or job.status() == JobStatus.VALIDATING or job.status() == JobStatus.RUNNING:
-        output = job.status().value + ': check JobStatus endpoint or check again later'
+        output = job.status().value + ': check JobStatus endpoint for start time estimate and check again later'
         return output
     
     QBraidJob = QiskitJob(jobID, job)
@@ -95,7 +100,51 @@ def get_job_results(jobID):
     for i in range(0, len(unbrokenData), length):
         data.append(''.join(map(str, unbrokenData[i:i+length])))
     return jsonify({'data': data})
+
+
+def get_job_results_uniform_randomness(jobID):
+    API_KEY = os.getenv('IBM_APIKEY')
+    provider = QiskitRuntimeService('ibm_quantum', API_KEY)
+    try:
+        job = provider.job(jobID)
+    except:
+        return('Job not found. Verify job ID URL parameter or else rerun your job')
     
+    if job.status() == JobStatus.INITIALIZING or job.status() == JobStatus.QUEUED or job.status() == JobStatus.VALIDATING or job.status() == JobStatus.RUNNING:
+        output = job.status().value + ': check JobStatus endpoint for start time estimate and check again later'
+        return output
+    
+    QBraidJob = QiskitJob(jobID, job)
+    try:
+        result = QBraidJob.result()
+    except RuntimeInvalidStateError as ex:
+        return ex.message
+    
+    rawData = result.measurements()
+    length = len(rawData[0])
+
+    unbrokenData = []
+    for shot in rawData:
+        for meas in shot:
+            unbrokenData.append(meas)
+    
+    extracted_data = one_to_one_toeplitz_extraction(unbrokenData)
+
+    data = []
+    for i in range(0, len(extracted_data), length):
+        data.append(''.join(map(str, extracted_data[i:i+length])))
+    
+    return jsonify({'uniformly random data': data})
+
+def one_to_one_toeplitz_extraction(data):
+    rng = np.random.default_rng()
+    row = rng.integers(2, size=len(data))
+    col = rng.integers(2, size=len(data))
+    return np.remainder(matmul_toeplitz((col, row), data), 2).astype('int8')
+
+
+
+#print(one_to_one_toeplitz_extraction([1, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1])) 
 #print(launch_job())
 #print(get_job_status('ctd1a0gy6ybg008tn780'))
 #print(get_job_results('ctd1a0gy6ybg008tn780'))

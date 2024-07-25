@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from IBM_QBraid_DataGeneration import launch_job, get_job_status, get_job_results
+from IBM_QBraid_DataGeneration import launch_job, get_job_status, get_job_results, get_job_results_uniform_randomness
 import json
 import os
 import waitress
@@ -65,6 +65,18 @@ def getJobResults():
     
     jobID = request.args.get('jobID')
     return (get_job_results(jobID))
+
+@app.route('/QRNG/JobResultsUniformRandomness', methods=['GET'])
+def getJobResultsToeplitz():
+    auth_message = check_authorization()
+    if auth_message != 'True':
+        return auth_message
+    
+    if 'jobID' not in request.args:
+        return 'ERROR: must provide valid Quantum Job ID as URL HTTP parameter'
+    
+    jobID = request.args.get('jobID')
+    return (get_job_results_uniform_randomness(jobID))
 
 if __name__ == '__main__':
     waitress.serve(app, host='0.0.0.0', port=8080)
