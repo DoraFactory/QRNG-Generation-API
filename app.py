@@ -49,7 +49,7 @@ def getJobStatus():
         return auth_message
     
     if 'jobID' not in request.args:
-        return 'ERROR: must provide valid Quantum Job ID as URL HTTP parameter'
+        return 'ERROR: must provide valid Quantum Job ID as URL HTTP parameter with attribute name = "jobID"'
     
     jobID = request.args.get('jobID')
     return get_job_status(jobID)
@@ -61,7 +61,7 @@ def getJobResults():
         return auth_message
     
     if 'jobID' not in request.args:
-        return 'ERROR: must provide valid Quantum Job ID as URL HTTP parameter'
+        return 'ERROR: must provide valid Quantum Job ID as URL HTTP parameter with attribute name = "jobID"'
     
     jobID = request.args.get('jobID')
     return (get_job_results(jobID))
@@ -73,7 +73,7 @@ def getJobResultsToeplitz():
         return auth_message
     
     if 'jobID' not in request.args:
-        return 'ERROR: must provide valid Quantum Job ID as URL HTTP parameter'
+        return 'ERROR: must provide valid Quantum Job ID as URL HTTP parameter with attribute name = "jobID"'
     
     jobID = request.args.get('jobID')
     return (get_job_results_uniform_randomness(jobID))

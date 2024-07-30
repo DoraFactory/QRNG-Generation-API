@@ -1,8 +1,8 @@
 import requests
 
 #Functional test method for job submission endpoint
-def testJobSubmissionEndpoint(length=None, number=None, QPU=None, header='API-Key', apiKey='TESThiuhfwe823rudf'):
-    url = f'http://127.0.0.1:5000/QRNG/SubmitJob?'
+def testJobSubmissionEndpoint(length=None, number=None, QPU=None, header='API-Key', apiKey='Rt_7ZwygcDjT7H-r6j9xlw'):
+    url = f'https://qrng-generation-server.dorafactory.org/QRNG/SubmitJob?'
     if length != None:
         url += f'length={length}&'
     if number != None:
@@ -85,14 +85,11 @@ def jobSubmissionFunctionalTests():
     testJobSubmissionEndpoint(length=200, number=50, QPU='ibm_brisbane')
     print(f'expected output: succesful completion\n')
 
-    testJobSubmissionEndpoint(header='API-Key', apiKey='1234')
+    testJobSubmissionEndpoint(header='API-Key', apiKey='3uMQoMsuLTKQUPKaUb44tQ')
     print('expected output: Succesful completion\n')
 
 #jobSubmissionFunctionalTests()
 
+#url = f'https://qrng-generation-server.dorafactory.org/QRNG/JobResults?jobID=ctkw30csj17g0081q02g'
 
-response = requests.get('http://127.0.0.1:8080/QRNG/JobResults?jobID=ctg4d5ws6dvg008aygkg', headers = {'API-Key': 'TESThiuhfwe823rudf'})
-print(response.text)
 
-response = requests.get('http://127.0.0.1:8080/QRNG/JobResultsUniformRandomness?jobID=ctg4d5ws6dvg008aygkg', headers = {'API-Key': 'TESThiuhfwe823rudf'})
-print(response.text)
