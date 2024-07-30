@@ -1,7 +1,7 @@
 import requests
 
 #Functional test method for job submission endpoint
-def testJobSubmissionEndpoint(length=None, number=None, QPU=None, header='API-Key', apiKey='Rt_7ZwygcDjT7H-r6j9xlw'):
+def testJobSubmissionEndpoint(length=None, number=None, QPU=None, header='API-Key', apiKey='abcd'):
     url = f'https://qrng-generation-server.dorafactory.org/QRNG/SubmitJob?'
     if length != None:
         url += f'length={length}&'
@@ -85,7 +85,7 @@ def jobSubmissionFunctionalTests():
     testJobSubmissionEndpoint(length=200, number=50, QPU='ibm_brisbane')
     print(f'expected output: succesful completion\n')
 
-    testJobSubmissionEndpoint(header='API-Key', apiKey='3uMQoMsuLTKQUPKaUb44tQ')
+    testJobSubmissionEndpoint(header='API-Key', apiKey='TESThiuhfwe823rudf')
     print('expected output: Succesful completion\n')
 
 #jobSubmissionFunctionalTests()
