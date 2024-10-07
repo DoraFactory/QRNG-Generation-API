@@ -90,9 +90,4 @@ def jobSubmissionFunctionalTests():
 
 #jobSubmissionFunctionalTests()
 
-url = f'https://qrng-generation-server.dorafactory.org/QRNG/SubmitJob?QPU=ibm_brisbane'
-url = f'https://qrng-generation-server.dorafactory.org/QRNG/JobResults?jobID=ctkvyf9907y0008vzw9g'
-response = requests.get(url, headers={'API-Key': 'CcSEIcBprWM6q9447dJWvg'})
-print(response.text)
-
 
