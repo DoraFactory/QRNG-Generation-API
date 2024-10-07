@@ -2,3 +2,4 @@
 __pycache__
 .env
 APIKey_Generation.py
+test_runs.py
