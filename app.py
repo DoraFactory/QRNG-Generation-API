@@ -10,7 +10,7 @@ API_Keys = os.getenv('API_Keys')
 
 max_shots_allowed = 100*10000
 
-allowed_devices = ['ibm_brisbane', 'ibm_kyoto', 'ibm_sherbrooke', 'ibm_osaka']
+allowed_devices = ['ibm_brisbane', 'ibm_kyiv', 'ibm_sherbrooke']
 
 def check_authorization():
     if 'API-Key' not in request.headers:

@@ -22,6 +22,11 @@ from scipy.linalg import toeplitz, matmul_toeplitz
 
 load_dotenv()
 
+def get_least_busy_device():
+    API_KEY = os.getenv('IBM_APIKEY')
+    provider = QiskitRuntimeProvider(API_KEY)
+    return provider.least_busy().id
+
 
 def launch_job(length=100, numLines=1, machine=None):
     API_KEY = os.getenv('IBM_APIKEY')
@@ -47,12 +52,6 @@ def launch_job(length=100, numLines=1, machine=None):
     output =  f'job running on device {machine}, jobID = {job._job_id} (***KEEP TRACK OF JOB ID***)'
     print('job running')
     return output
-
-
-def get_least_busy_device():
-    API_KEY = os.getenv('IBM_APIKEY')
-    provider = QiskitRuntimeProvider(API_KEY)
-    return provider.least_busy().id
 
 
 def get_job_status(jobID):
